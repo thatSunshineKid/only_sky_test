@@ -13,9 +13,9 @@
         - *WTforms validator Length*
 
 - [x] Update the index page to list all blog posts (showing 10 per page)
-    - *index route returns list of posts on index template, ordered by last created, along with pagination if needed*
+    - *index route returns list of posts on index template, ordered by last created, along with pagination of 10 if needed*
 - [x] Add archive listing page that limits the results to a specific month/year
-    - *archive page located at '/archive/<month>/<year>' shows post list, but filtered to return only the correct month and year*
+    - *archive page located at '/archive/month/year' shows post list, but filtered to return only the correct month and year, based on url parameters month and year*
 
 # Helpful Tips
 
