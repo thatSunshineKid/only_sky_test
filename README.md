@@ -1,13 +1,13 @@
 # Tasks
 
-- Create an about me page and link to it in the nav
-- Create a create blog post page
+- [x] Create an about me page and link to it in the nav
+- [x] Create a create blog post page
 
-    - a post must have a title
-    - the post itelf must be at least 10 characters long (yes totally arbitrary :-) )
+    - [x] a post must have a title
+    - [x] the post itelf must be at least 10 characters long (yes totally arbitrary :-) )
 
-- Update the index page to list all blog posts (showing 10 per page)
-- Add archive listing page that limits the results to a specific month/year
+- [ ] Update the index page to list all blog posts (showing 10 per page)
+- [ ] Add archive listing page that limits the results to a specific month/year
 
 # Helpful Tips
 
