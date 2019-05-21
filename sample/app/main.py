@@ -94,6 +94,9 @@ def index():
 @app.route("/archive/<int:month>/<int:year>")
 def archive(month,year):
     low = datetime(year, month, 1)
+    #in case month is december, set next month to January (no 13th month!)
+    if (month == 12):
+        month = 0
     high = datetime(year, (month + 1), 1)
     pagetitle = "Archive for %s" % (low.strftime("%B %Y"))
     page = request.args.get('page', 1, type=int)

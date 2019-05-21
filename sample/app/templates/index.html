@@ -5,7 +5,7 @@
 <div class="blog-post">
     <h2 class="blog-post-title"> {{ post.title }}</h2>
     <p class="blog-post-meta">{{ post.pub_date.strftime("%B %d, %Y") }} by <a href="/account">author</a></p>
-        <p>{{ post.body }}</p><p class="blog-post-meta text-right">category: {{ post.category }}</p>
+        <p>{{ post.body }}</p><p class="blog-post-meta text-right">category: {{ post.category.name }}</p>
     <hr>
 </div>
     {% endfor %}
