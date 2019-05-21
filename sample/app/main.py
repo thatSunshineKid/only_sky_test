@@ -8,8 +8,7 @@ from flask_login import current_user, login_required, login_user, LoginManager, 
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from werkzeug.debug import DebuggedApplication
-from wtforms import PasswordField, StringField
-from wtforms.validators import DataRequired
+from wtforms import PasswordField, StringField, validators
 
 from app import commands
 
@@ -88,8 +87,8 @@ def index():
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    email = StringField('Email', validators=[validators.DataRequired()])
+    password = PasswordField('Password', validators=[validators.DataRequired()])
 
     def __init__(self, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
@@ -109,6 +108,29 @@ class LoginForm(FlaskForm):
 
         self.password.errors.append('Invalid email and/or password specified.')
         return False
+
+class PostForm(FlaskForm):
+    title = StringField('Title', validators=[validators.DataRequired()])
+    body = StringField('Body', validators=[validators.Length(min=10)])
+
+    def validate(self):
+        vf = FlaskForm.validate(self)
+        if not vf:
+            return False
+        else:
+            return True
+
+@app.route('/post/create/', methods=['GET', 'POST'])
+def createpost():
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post = Post(title=form.title, body=form.body, category=Category.query.filter_by(name='general').one_or_none())
+        db.session.add(post)
+        db.session.commit()
+        flash('Post added successfully')
+        return redirect(url_for('index'))
+    return render_template('postform.html', form=form)
 
 
 @app.route('/auth/login/', methods=['GET', 'POST'])
@@ -140,6 +162,8 @@ def account():
 def about():
     return render_template('about.html', user=current_user)
 
+# @app.route('/posts/')
+
 
 @app.before_first_request
 def initialize_data():
@@ -147,7 +171,9 @@ def initialize_data():
     user = User.query.filter_by(email='blogger@sample.com').one_or_none()
     if user is None:
         user = User(email='blogger@sample.com', password='password')
+        category = Category(name='General')
         db.session.add(user)
+        db.session.add(category)
         db.session.commit()
 
 
