@@ -1,13 +1,21 @@
 # Tasks
 
 - [x] Create an about me page and link to it in the nav
+    - *Notes: located at /about , link in nav 'about'*
 - [x] Create a create blog post page
+    - *located at /post/create , also link in nav 'create post'*
+    - *No user attached to Post model as of now*
+    - *Category automatically added as 'General'*
 
     - [x] a post must have a title
+        - *WTforms validators do this work*
     - [x] the post itelf must be at least 10 characters long (yes totally arbitrary :-) )
+        - *WTforms validator Length*
 
 - [x] Update the index page to list all blog posts (showing 10 per page)
+    - *index view returns list of posts, ordered by last created, along with pagination if needed*
 - [x] Add archive listing page that limits the results to a specific month/year
+    - *archive page shows index post list, but filtered to return only the correct month and year*
 
 # Helpful Tips
 
