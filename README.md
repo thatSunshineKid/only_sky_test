@@ -1,4 +1,5 @@
-# Tasks              *Adam's notes are in italics*
+# Tasks
+#### *Adam's notes are in italics*
 
 - [x] Create an about me page and link to it in the nav
     - *Notes: new about me page located at /about , link in nav 'about'*
