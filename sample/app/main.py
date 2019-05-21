@@ -53,7 +53,6 @@ class Post(db.Model):
     title = db.Column(db.String(80))
     body = db.Column(db.Text)
     pub_date = db.Column(db.DateTime)
-
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
     category = db.relationship(
         'Category', backref=db.backref('posts', lazy='dynamic'))
@@ -83,8 +82,27 @@ class Category(db.Model):
 
 @app.route("/")
 def index():
-    posts = Post.query.order_by(Post.pub_date.desc()).all()
-    return render_template('index.html', posts=posts)
+    pagetitle = "The Bootstrap Blog"
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.order_by(Post.pub_date.desc()).paginate(page,10,False)
+    next_url = url_for('index', page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('index', page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html', posts=posts.items, next_url=next_url, prev_url=prev_url, pagetitle=pagetitle)
+
+@app.route("/archive/<int:month>/<int:year>")
+def archive(month,year):
+    low = datetime(year, month, 1)
+    high = datetime(year, (month + 1), 1)
+    pagetitle = "Archive for %s" % (low.strftime("%B %Y"))
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter(Post.pub_date > low).filter(Post.pub_date < high).order_by(Post.pub_date.desc()).paginate(page,10,False)
+    next_url = url_for('archive', month=month, year=year, page=posts.next_num) \
+        if posts.has_next else None
+    prev_url = url_for('archive', month=month, year=year, page=posts.prev_num) \
+        if posts.has_prev else None
+    return render_template('index.html', posts=posts.items, next_url=next_url, prev_url=prev_url, pagetitle=pagetitle )
 
 
 class LoginForm(FlaskForm):
@@ -99,14 +117,12 @@ class LoginForm(FlaskForm):
         rv = FlaskForm.validate(self)
         if not rv:
             return False
-
         user = User.query.filter_by(email=self.email.data).one_or_none()
         if user:
             password_match = user.check_password(self.password.data)
             if password_match:
                 self.user = user
                 return True
-
         self.password.errors.append('Invalid email and/or password specified.')
         return False
 
@@ -123,19 +139,20 @@ class PostForm(FlaskForm):
 
 @app.route('/post/create/', methods=['GET', 'POST'])
 def createpost():
+    pagetitle = "Add a Post"
     form = PostForm()
-
     if form.validate_on_submit():
-        post = Post(title=form.title.data, body=form.body.data, category=Category.query.filter_by(name='general').one_or_none())
+        post = Post(title=form.title.data, body=form.body.data, category=Category.query.filter_by(name="General").one_or_none())
         db.session.add(post)
         db.session.commit()
         flash('Post added successfully')
         return redirect(url_for('index'))
-    return render_template('postform.html', form=form)
+    return render_template('postform.html', form=form, pagetitle=pagetitle)
 
 
 @app.route('/auth/login/', methods=['GET', 'POST'])
 def login():
+    pagetitle="Login page"
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -143,7 +160,7 @@ def login():
         flash('Logged in successfully.')
         return redirect(request.args.get('next') or url_for('index'))
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, pagetitle=pagetitle)
 
 
 @app.route('/logout/')
@@ -161,7 +178,8 @@ def account():
 @app.route('/about/')
 @login_required
 def about():
-    return render_template('about.html', user=current_user)
+    pagetitle = "About me Page"
+    return render_template('about.html', user=current_user, pagetitle=pagetitle)
 
 # @app.route('/posts/')
 

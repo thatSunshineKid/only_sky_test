@@ -5,13 +5,17 @@
 <div class="blog-post">
     <h2 class="blog-post-title"> {{ post.title }}</h2>
     <p class="blog-post-meta">{{ post.pub_date.strftime("%B %d, %Y") }} by <a href="/account">author</a></p>
-        <p>{{ post.body }}</p>
+        <p>{{ post.body }}</p><p class="blog-post-meta text-right">category: {{ post.category }}</p>
     <hr>
 </div>
     {% endfor %}
-<nav class="blog-pagination">
-    <a class="btn btn-outline-primary" href="#">Older</a>
-    <a class="btn btn-outline-secondary disabled" href="#">Newer</a>
-</nav>
+    <nav class="blog-pagination">
+    {% if prev_url %}
+        <a class="btn btn-outline-primary" href="{{ prev_url }}">prev</a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn btn-outline-primary" href="{{ next_url }}">next</a>
+    {% endif %}
+    </nav>
 
 {% endblock %}
