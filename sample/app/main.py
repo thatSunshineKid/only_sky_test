@@ -83,7 +83,8 @@ class Category(db.Model):
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    posts = Post.query.order_by(Post.pub_date.desc()).all()
+    return render_template('index.html', posts=posts)
 
 
 class LoginForm(FlaskForm):
@@ -125,7 +126,7 @@ def createpost():
     form = PostForm()
 
     if form.validate_on_submit():
-        post = Post(title=form.title, body=form.body, category=Category.query.filter_by(name='general').one_or_none())
+        post = Post(title=form.title.data, body=form.body.data, category=Category.query.filter_by(name='general').one_or_none())
         db.session.add(post)
         db.session.commit()
         flash('Post added successfully')
